@@ -1,0 +1,20 @@
+name: ozen
+channels:
+  - conda-forge
+  - nvidia
+  - pytorch
+dependencies:
+  - nodejs
+  - yarn
+  - nvidia::cudatoolkit
+  - git
+  - numpy
+  - pip
+  - python=3.10.0
+  - scikit-image
+  - ffmpeg
+  - torchvision
+  - torchaudio
+  - pytorch::pytorch
+  - pip:
+    - -r requirements.txt
