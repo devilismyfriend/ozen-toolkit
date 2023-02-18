@@ -19,11 +19,16 @@ if __name__ == '__main__':
     parser.add_argument('-mode', help='Automatic diarization and segmentation', default='segment and transcribe', type=str, choices=['auto', 'segment and transcribe', 'diarize', 'transcribe'])
     parser.add_argument('-diaization_model', help='Which diarization model to use, HF repo address', default='pyannote/speaker-diarization')
     parser.add_argument('-segmentation_model', help='Which segmentation model to use, HF repo address', default='pyannote/segmentation')
+    parser.add_argument('seg_onset', help='onset activation threshold, influences the segment detection', default=0.6, type=float)
+    parser.add_argument('seg_offset', help='offset activation threshold, influences the segment detection', default=0.4, type=float)
+    parser.add_argument('seg_min_duration', help='minimum duration of a segment, remove speech regions shorter than that many seconds.', default=2.0, type=float)
+    parser.add_argument('seg_min_duration_off', help='fill non-speech regions shorter than that many seconds.', default=0.0, type=float)
     parser.add_argument('-hf_token', help='Huggingface token', default='')
     parser.add_argument('-valid_ratio', help='Ratio of validation data', default=0.2, type=float)
+    parser.add_argument('-ignore-cofnig', help='Ignore the config, specifiy your own setting sin CLI', action='store_true')
     args = parser.parse_args()
     #check for config.ini
-    if os.path.isfile('config.ini'):
+    if os.path.isfile('config.ini') and not args.ignore_cofnig:
         config = configparser.ConfigParser()
         config.read('config.ini')
         args.whisper_model = config['DEFAULT']['whisper_model']
@@ -32,16 +37,24 @@ if __name__ == '__main__':
         args.segmentation_model = config['DEFAULT']['segmentation_model']
         args.valid_ratio = float(config['DEFAULT']['valid_ratio'])
         args.hf_token = config['DEFAULT']['hf_token']
-    else:
+        args.seg_onset = float(config['DEFAULT']['seg_onset'])
+        args.seg_offset = float(config['DEFAULT']['seg_offset'])
+        args.seg_min_duration = float(config['DEFAULT']['seg_min_duration'])
+        args.seg_min_duration_off = float(config['DEFAULT']['seg_min_duration_off'])
+    if not os.path.isfile('config.ini') and not args.ignore_cofnig:
         #create config.ini
         config = configparser.ConfigParser()
         config['DEFAULT'] = {'hf_token': ''}
-        config['DEFAULT']['hf_token'] = args.hf_token
-        config['DEFAULT']['whisper_model'] = args.whisper_model
-        config['DEFAULT']['device'] = args.device
-        config['DEFAULT']['diaization_model'] = args.diaization_model
-        config['DEFAULT']['segmentation_model'] = args.segmentation_model
-        config['DEFAULT']['valid_ratio'] = str(args.valid_ratio)
+        config['DEFAULT']['hf_token'] = ''
+        config['DEFAULT']['whisper_model'] = 'openai/whisper-large-v2'
+        config['DEFAULT']['device'] = 'cuda'
+        config['DEFAULT']['diaization_model'] = 'pyannote/speaker-diarization'
+        config['DEFAULT']['segmentation_model'] = 'pyannote/segmentation'
+        config['DEFAULT']['valid_ratio'] = str(0.2)
+        config['DEFAULT']['seg_onset'] = str(0.6)
+        config['DEFAULT']['seg_offset'] = str(0.4)
+        config['DEFAULT']['seg_min_duration'] = str(2.0)
+        config['DEFAULT']['seg_min_duration_off'] = str(0.0)
         with open('config.ini', 'w') as configfile:
             config.write(configfile)
     #check if thre's a .TOKEN file in the current directory
@@ -57,7 +70,7 @@ if __name__ == '__main__':
             if args.hf_token == '':
                 print('No token entered, exiting...')
                 exit()
-            else:
+            elif args.hf_token != '' and not args.ignore_cofnig:
                 config['DEFAULT']['hf_token'] = args.hf_token
                 with open('config.ini', 'w') as configfile:
                     config.write(configfile)
@@ -106,7 +119,7 @@ if __name__ == '__main__':
             if args.mode == 'segment and transcribe':
                 print(colorama.Fore.GREEN + 'Loading Segment Model...' + colorama.Fore.RESET)
                 pipe = load_pyannote_audio_model(args.segmentation_model, args.hf_token)
-                segments = segment_audio_file(file_path, pipe)
+                segments = segment_audio_file(file_path, pipe, args.seg_onset, args.seg_offset, args.seg_min_duration, args.seg_min_duration_off)
                 #milisecs = millisec(segments)
                 print(colorama.Fore.GREEN + 'Segmenting...' + colorama.Fore.RESET)
                 groups = group_segmentation(segments)
@@ -177,7 +190,7 @@ if __name__ == '__main__':
                 if args.mode == 'segment and transcribe':
                     print(colorama.Fore.GREEN + 'Loading Segment Model...' + colorama.Fore.RESET)
                     pipe = load_pyannote_audio_model(args.segmentation_model, args.hf_token)
-                    segments = segment_audio_file(file_path, pipe)
+                    segments = segment_audio_file(file_path, pipe, args.seg_onset, args.seg_offset, args.seg_min_duration, args.seg_min_duration_off)
                     #milisecs = millisec(segments)
                     print(colorama.Fore.GREEN + 'Segmenting...' + colorama.Fore.RESET)
                     groups = group_segmentation(segments)

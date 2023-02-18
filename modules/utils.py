@@ -63,16 +63,16 @@ def load_pyannote_audio_model(model_name,use_auth_token=None):
     else:
         pipeline = Model.from_pretrained(model_name,use_auth_token=use_auth_token)
     return pipeline
-def segment_audio_file(file_path, model):
+def segment_audio_file(file_path, model, seg_onset, seg_offset, seg_min_duration, seg_min_duration_off):
     from pyannote.audio.pipelines import VoiceActivityDetection
     pipeline = VoiceActivityDetection(segmentation=model)
     HYPER_PARAMETERS = {
     # onset/offset activation thresholds
-        "onset": 0.6, "offset": 0.4,
+        "onset": seg_onset, "offset": seg_offset,
         # remove speech regions shorter than that many seconds.
-        "min_duration_on": 2.0,
+        "min_duration_on": seg_min_duration,
         # fill non-speech regions shorter than that many seconds.
-        "min_duration_off": 0.0
+        "min_duration_off": seg_min_duration_off
     }
     pipeline.instantiate(HYPER_PARAMETERS)
     vad = pipeline(file_path)
