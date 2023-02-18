@@ -9,7 +9,7 @@ Given a folder of files or a single audio file, it will extract the speech, tran
 
 ```sh
 Accept the license terms on https://huggingface.co/pyannote/segmentation 
-Install Anaconda or set up your own environment and install requirements
+Install Anaconda or setup your own environment and install requirements
 git clone https://github.com/devilismyfriend/ozen-toolkit
 run Set Up Ozen.bat
 ```
