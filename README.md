@@ -1,9 +1,9 @@
 # OZEN toolkit, AI powered audio dataset helper.
 <a href='https://ko-fi.com/O4O5GU04F' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi2.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
-OZEN is a small tool to help you process audio files to a Librispeech format.
+OZEN is a small tool to help you process audio files to a LJ format.
 
-Given a folder of files or a single audio file, it will extract the speech, transcribe using Whisper and save in the LS format (wavs in wavs folder, train and valid txts).
+Given a folder of files or a single audio file, it will extract the speech, transcribe using Whisper and save in the LJ format (wavs in wavs folder, train and valid txts).
 
 ## INSTALLATION
 
