@@ -94,7 +94,7 @@ if __name__ == '__main__':
                 print(colorama.Fore.GREEN + 'Converting to WAV...' + colorama.Fore.RESET)
                 file_path = convert_to_wav(os.path.join(file_path, filename))
             else:
-                    file_path = os.path.join(file_path, filename)
+                file_path = os.path.join(file_path, filename)
             if args.mode == 'auto':
                 print(colorama.Fore.GREEN + 'Loading Diraization Model...' + colorama.Fore.RESET)
                 pipe = load_pyannote_audio_pipeline(args.diaization_model, args.hf_token)
