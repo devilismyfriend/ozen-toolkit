@@ -1,0 +1,53 @@
+version: '3'
+services:
+  db:
+    container_name: db
+    image: postgres:13
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ai_workers
+
+  backend:
+    build:
+      dockerfile: ./.provisions/dev/DockerfileBE
+    env_file: ./.provisions/dev/.env
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+      - queue
+    networks:
+      - ai_workers
+
+  worker:
+    build:
+      dockerfile: ./.provisions/dev/DockerfileWorker
+    env_file: ./.provisions/dev/.env
+    volumes:
+      - ./worker:/app
+    depends_on:
+      - db
+      - queue
+
+  queue:
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ai_workers:
