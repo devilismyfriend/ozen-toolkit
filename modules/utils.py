@@ -27,8 +27,9 @@ def create_output_structure(output_path, project_name, project_timestamp):
     #create_dir(output_path)
     return output_path
 def add_to_textfile(file_path, text):
-    with open(file_path, "a") as text_file:
+    with open(file_path, "a", encoding="utf-8") as text_file:
         text_file.write(text)
+
 
 def convert_to_wav(file_path):
     # Load the audio file
