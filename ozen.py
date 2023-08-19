@@ -137,7 +137,7 @@ if __name__ == '__main__':
                     wav = str(wav)
                     res = transcribe_audio(os.path.join(wavs_path, wav+'.wav'),transcribe_pipe)[1:]
                     #add to train file
-                    add_to_textfile(train_file, 'wavs/'+wav+'.wav|'+res+'\n')
+                    add_to_textfile(train_file, 'wavs/' + wav + '.wav|' + encode_utf8(res) + '\n')
                     pb.update(1)
                 for wav in range(amount_to_train,amount_to_train+amount_to_valid):
                     wav = str(wav)
