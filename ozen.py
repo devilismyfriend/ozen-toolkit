@@ -143,7 +143,7 @@ if __name__ == '__main__':
                     wav = str(wav)
                     res = transcribe_audio(os.path.join(wavs_path, wav+'.wav'),transcribe_pipe)[1:]
                     #add to valid file
-                    add_to_textfile(valid_file, 'wavs/'+wav+'.wav|'+res+'\n')
+                    add_to_textfile(valid_file, 'wavs/' + wav + '.wav|' + encode_utf8(res) + '\n')
                     pb.update(1)
     elif os.path.isdir(file_path):
         # Convert all files in the directory
