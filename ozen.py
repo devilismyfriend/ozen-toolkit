@@ -133,6 +133,8 @@ if __name__ == '__main__':
                 amount_to_train = int(len(groups) * (1 - args.valid_ratio))
                 amount_to_valid = len(groups) - amount_to_train
                 pb = tqdm(total=len(groups))
+                def encode_utf8(s):
+                    return s.encode('utf-8').decode('utf-8')
                 for wav in range(0,amount_to_train):
                     wav = str(wav)
                     res = transcribe_audio(os.path.join(wavs_path, wav+'.wav'),transcribe_pipe)[1:]
