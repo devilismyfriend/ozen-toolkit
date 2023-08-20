@@ -133,17 +133,19 @@ if __name__ == '__main__':
                 amount_to_train = int(len(groups) * (1 - args.valid_ratio))
                 amount_to_valid = len(groups) - amount_to_train
                 pb = tqdm(total=len(groups))
+                def encode_utf8(s):
+                    return s.encode('utf-8').decode('utf-8')
                 for wav in range(0,amount_to_train):
                     wav = str(wav)
                     res = transcribe_audio(os.path.join(wavs_path, wav+'.wav'),transcribe_pipe)[1:]
                     #add to train file
-                    add_to_textfile(train_file, 'wavs/'+wav+'.wav|'+res+'\n')
+                    add_to_textfile(train_file, 'wavs/' + wav + '.wav|' + encode_utf8(res) + '\n')
                     pb.update(1)
                 for wav in range(amount_to_train,amount_to_train+amount_to_valid):
                     wav = str(wav)
                     res = transcribe_audio(os.path.join(wavs_path, wav+'.wav'),transcribe_pipe)[1:]
                     #add to valid file
-                    add_to_textfile(valid_file, 'wavs/'+wav+'.wav|'+res+'\n')
+                    add_to_textfile(valid_file, 'wavs/' + wav + '.wav|' + encode_utf8(res) + '\n')
                     pb.update(1)
     elif os.path.isdir(file_path):
         # Convert all files in the directory

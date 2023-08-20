@@ -22,3 +22,9 @@ The first time you'll be prompted to provide an HuggingFace token, once you do a
 
 Alternatively you can use ozen.py in cli.
 
+## TUTORIAL
+
+15 May 2023 Full Youtube Tutorial For Voice Training With Ozen Toolkit and DLAS: [Link](https://youtu.be/OiMRlqcgDL0)
+
+[![image](https://github.com/FurkanGozukara/DL-Art-School/assets/19240467/964f07d1-7be3-43c7-896b-ed1cbb7463da)](https://youtu.be/OiMRlqcgDL0)
+
